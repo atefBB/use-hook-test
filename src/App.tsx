@@ -1,16 +1,21 @@
-import { experimental_use as use } from "react";
+import { experimental_use as use, Suspense } from "react";
+
+import { Gps } from "./Gps";
 
 import "./App.css";
 
-const getGps = new Promise((resolve) => {
-  resolve("resolved");
-});
+const idsFetcher = fetch("./ids.json").then((result) => result.json());
 
-function Gps() {
-  const data = use(getGps);
-  return <>{data}</>;
+function Names() {
+  const ids = use(idsFetcher);
+  return <div>{JSON.stringify(ids)}</div>;
 }
 
 export function App() {
-  return <Gps />;
+  return (
+    <Suspense fallback="loading">
+      <Names />
+      <Gps />
+    </Suspense>
+  );
 }
